@@ -13,12 +13,13 @@ namespace XUnitTestProject
             // Not happy if I try and do Assert.True(name.StartsWith("N"));
         }
 
-        [Fact]
-        public void IsNullOrEmpty()
+        [Theory]
+        [InlineData("", true)]
+        [InlineData(null, true)]
+        [InlineData("Hey Nat", false)]
+        public void IsNullOrEmpty(string testString, Boolean result)
         {
-            Assert.True(String.IsNullOrEmpty(""));
-            Assert.True(String.IsNullOrEmpty(null));
-            Assert.False(String.IsNullOrEmpty("Hey Nat"));
+            Assert.Equal(String.IsNullOrEmpty(testString), result);
         }
 
         [Fact]

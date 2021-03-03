@@ -48,6 +48,10 @@ namespace XUnitTestProject
             IEnumerable<string> ticketTypes = tocs.SelectMany(toc => toc.TicketName, (toc, ticketName) => String.Format("{0} {1}", toc.TocName, ticketName));
 
             Assert.Equal(4, ticketTypes.Count());
+            Assert.Equal("SNCF TresCool", ticketTypes.First());
+            Assert.Equal("SNCF PasBon", ticketTypes.ElementAt(1));
+            Assert.Equal("Renfe Primero", ticketTypes.ElementAt(2));
+            Assert.Equal("Renfe Segundo", ticketTypes.Last());
         }
     }
 }
