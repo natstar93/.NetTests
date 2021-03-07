@@ -44,7 +44,10 @@ namespace XUnitTestProject
         [Fact]
         public void SelectMany()
         {
-            Toc[] tocs = { new Toc { TocName = "SNCF", TicketName = new List<string> { "TresCool", "PasBon" } }, new Toc { TocName = "Renfe", TicketName = new List<string> { "Primero", "Segundo" } } };
+            Toc[] tocs = {
+                new Toc { TocName = "SNCF", TicketName = new List<string> { "TresCool", "PasBon" } },
+                new Toc { TocName = "Renfe", TicketName = new List<string> { "Primero", "Segundo" } }
+            };
             IEnumerable<string> ticketTypes = tocs.SelectMany(toc => toc.TicketName, (toc, ticketName) => String.Format("{0} {1}", toc.TocName, ticketName));
 
             Assert.Equal(4, ticketTypes.Count());
@@ -52,6 +55,36 @@ namespace XUnitTestProject
             Assert.Equal("SNCF PasBon", ticketTypes.ElementAt(1));
             Assert.Equal("Renfe Primero", ticketTypes.ElementAt(2));
             Assert.Equal("Renfe Segundo", ticketTypes.Last());
+        }
+
+        [Fact]
+        public void SelectManyWhere()
+        {
+            Station[] stations =
+            {
+                new Station { Name = "St Pancras", Shops = new List<string> { "Pret", "Boots", "Rituals" } },
+                new Station { Name = "Marylebone", Shops = new List<string> { "Pret", "Boots", "WHSmith" } }
+            };
+            var results = stations.SelectMany(station => station.Shops, (station, shopName) => new { station, shopName })
+                .Where(stationAndShop => !stationAndShop.shopName.Equals("Pret"))
+                .Select(stationAndShop => new
+                {
+                    Location = stationAndShop.station.Name,
+                    Shop = stationAndShop.shopName,
+                });
+
+            var expected = new[]
+            {
+                new {
+                    Location = "St Pancras",
+                    Shop = "Boots",
+                },
+                new { Location = "St Pancras", Shop = "Rituals" }, 
+                new { Location = "Marylebone", Shop = "Boots" }, 
+                new { Location = "Marylebone", Shop = "WHSmith" }
+            }.AsEnumerable();
+
+            Assert.Equal(expected, results);
         }
     }
 }

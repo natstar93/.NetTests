@@ -9,4 +9,19 @@ namespace XUnitTestProject
         public string TocName { get; set; }
         public List<string> TicketName { get; set; }
     }
+
+    class Station
+    {
+        public string Name
+        {
+            get; set;
+        }
+
+        public List<string> Shops
+        {
+            get; set;
+        }
+
+    }
+
 }
