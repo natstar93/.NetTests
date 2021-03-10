@@ -124,5 +124,23 @@ namespace XUnitTestProject
             // I had to accept an option in VS to handle the exception here.
             // Would another user checking out the repo and running this test have to do the same? If so is there a better way to handle?
         }
+
+        [Fact]
+        public void SingleOrDefault()
+        {
+            Fee[] fees =  {
+                new Fee { Name="Library Fine", Cost=0.2m },
+                new Fee { Name="Lockdown Violation Fee", Cost=100m },
+                new Fee { Name="Drunk and Disorderly Fee", Cost=100m }
+            };
+
+            Assert.Equal(fees[2], fees.SingleOrDefault(fee => fee.Name == "Drunk and Disorderly Fee"));
+            Assert.Null(fees.SingleOrDefault(fee => fee.Cost == 5m));
+            Assert.ThrowsAny<InvalidOperationException>(() => fees.SingleOrDefault(fee => fee.Cost == 100m));
+
+            Assert.Equal(fees[0], fees.Single(fee => fee.Cost == 0.2m));
+            Assert.ThrowsAny<InvalidOperationException>(() => fees.Single(fee => fee.Cost == 5m));
+            Assert.ThrowsAny<InvalidOperationException>(() => fees.Single(fee => fee.Cost == 100m));
+        }
     }
 }
