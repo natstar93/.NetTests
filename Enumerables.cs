@@ -18,7 +18,7 @@ namespace XUnitTestProject
             List<string> expected = new List<string> { "Chiltern Railways", "Eurostar", "SNCF" };
 
             Assert.Equal(expected, sortedTocs); // this passes but the types are different
-         }
+        }
 
         [Fact]
         public void MaxEnumerable()
@@ -79,12 +79,50 @@ namespace XUnitTestProject
                     Location = "St Pancras",
                     Shop = "Boots",
                 },
-                new { Location = "St Pancras", Shop = "Rituals" }, 
-                new { Location = "Marylebone", Shop = "Boots" }, 
+                new { Location = "St Pancras", Shop = "Rituals" },
+                new { Location = "Marylebone", Shop = "Boots" },
                 new { Location = "Marylebone", Shop = "WHSmith" }
             }.AsEnumerable();
 
             Assert.Equal(expected, results);
+        }
+
+        [Fact]
+        public void IEnumerableYield()
+        {
+            IEnumerable<string> IdNos(int max)
+            {
+                for (int i = 0; i < max; i++)
+                {
+                    yield return i.ToString();
+                }
+            }
+
+            IEnumerable<string> expected = new List<string> { "0", "1", "2" };
+
+            var result = IdNos(3);
+                
+            Assert.Equal(expected, result);
+        }
+
+        [Fact]
+        public void FirstOrDefault()
+        {
+            Fee[] fees =  {
+                new Fee { Name="Booking Fee", Cost=1.50m },
+                new Fee { Name="Refund Fee", Cost=5.70m },
+                new Fee { Name="Toc Admin Charge", Cost=2.00m }
+            };
+
+            Assert.Equal(fees[1], fees.FirstOrDefault(fee => fee.Cost > 5m));
+            Assert.Equal(fees[0], fees.FirstOrDefault(fee => fee.Cost < 5m));
+            Assert.Equal(fees[2], fees.FirstOrDefault(fee => fee.Cost == 2m));
+            Assert.Null(fees.FirstOrDefault(fee => fee.Cost == 0m));
+
+            Assert.Equal(fees[1], fees.First(fee => fee.Cost > 5m));
+            Assert.Throws<InvalidOperationException>(() => fees.First(fee => fee.Cost == 0m));
+            // I had to accept an option in VS to handle the exception here.
+            // Would another user checking out the repo and running this test have to do the same? If so is there a better way to handle?
         }
     }
 }
