@@ -88,6 +88,29 @@ namespace XUnitTestProject
         }
 
         [Fact]
+        public void SelectManyWhereTuple()
+        {
+            Station[] stations =
+            {
+                new Station { Name = "St Pancras", Shops = new List<string> { "Pret", "Boots", "Rituals" } },
+                new Station { Name = "Marylebone", Shops = new List<string> { "Pret", "Boots", "WHSmith" } }
+            };
+
+            IEnumerable<Tuple<string, string>> results = stations.SelectMany(station => station.Shops, (station, shopName) => Tuple.Create(station, shopName ))
+                .Where(stationWithShopName => stationWithShopName.Item2 == "Boots")
+                .Select(stationWithShopName => Tuple.Create(stationWithShopName.Item1.Name, stationWithShopName.Item2));
+
+            var expected = new List<Tuple<string, string>>
+            {
+                Tuple.Create("St Pancras", "Boots"),
+                Tuple.Create("Marylebone", "Boots")
+            };
+            // This is completely blowing up and ruining everything :P
+            Assert.Equal(expected, results);
+        }
+
+
+        [Fact]
         public void IEnumerableYield()
         {
             IEnumerable<string> IdNos(int max)
