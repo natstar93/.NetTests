@@ -98,15 +98,15 @@ namespace XUnitTestProject
 
             IEnumerable<Tuple<string, string>> results = stations.SelectMany(station => station.Shops, (station, shopName) => Tuple.Create(station, shopName ))
                 .Where(stationWithShopName => stationWithShopName.Item2 == "Boots")
-                .Select(stationWithShopName => Tuple.Create(stationWithShopName.Item1.Name, stationWithShopName.Item2));
+                .Select(stationWithShopName => new Tuple<string, string> (stationWithShopName.Item1.Name, stationWithShopName.Item2));
 
-            var expected = new List<Tuple<string, string>>
+            var expected = new []
             {
                 Tuple.Create("St Pancras", "Boots"),
                 Tuple.Create("Marylebone", "Boots")
             };
-            // This is completely blowing up and ruining everything :P
             Assert.Equal(expected, results);
+            Assert.NotSame(expected, results);
         }
 
 
